@@ -131,4 +131,5 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-</AdminLayout></template>
+    </AdminLayout>
+</template>

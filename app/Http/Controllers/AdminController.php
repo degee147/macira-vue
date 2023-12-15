@@ -97,7 +97,7 @@ class AdminController extends Controller
         // Resolve the Faker instance from the service container
         $faker = resolve(Generator::class);
 
-        for ($i = 1; $i <= 150; $i++) {
+        for ($i = 1; $i <= 40; $i++) {
             $rowData = [
                 $i,
                 $faker->name,

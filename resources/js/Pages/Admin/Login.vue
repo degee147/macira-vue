@@ -46,14 +46,14 @@ const submit = () => {
 
             <form @submit.prevent="submit">
                 <div>
-                    <InputLabel for="email_or_username" value="Email or Username" />
+                    <InputLabel for="email_or_username" value="Email or Username: admin or admin@gmail.com" />
                     <TextInput id="email_or_username" v-model="form.email_or_username" type="text" class="mt-1 block w-full" required autofocus
                         autocomplete="email_or_username" />
                     <InputError class="mt-2" :message="form.errors.email_or_username" />
                 </div>
 
                 <div class="mt-4">
-                    <InputLabel for="password" value="Password" />
+                    <InputLabel for="password" value="Password: password" />
                     <TextInput id="password" v-model="form.password" type="password" class="mt-1 block w-full" required
                         autocomplete="current-password" />
                     <InputError class="mt-2" :message="form.errors.password" />
