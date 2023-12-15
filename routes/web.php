@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\RegisteredUserController;
+use App\Http\Controllers\AdminProfileInformationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,11 +39,15 @@ Route::post('/admin/login', [AdminController::class, 'store'])->name('admin_logi
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin_dashboard');
     Route::get('/admin/users', [AdminController::class, 'registered_users'])->name('registered_users');
-    Route::get('/admin/profile', [AdminProfileController::class, 'show'])->name('admin_profile');
     Route::get('/admin/csv-import', [AdminController::class, 'admin_csv_import'])->name('admin_csv_import');
     Route::post('/admin/csv-upload', [AdminController::class, 'uploadCSV'])->name('admin_csv_upload');
     Route::get('/admin/users-data', [AdminController::class, 'admin_users_data'])->name('admin_users_data');
     Route::get('/admin/csv-data', [AdminController::class, 'csvData'])->name('admin_csv_data');
     Route::get('/admin/csv-sample', [AdminController::class, 'admin_csv_sample'])->name('admin_csv_sample');
     Route::get('/admin/api-data', [AdminController::class, 'admin_api_data'])->name('admin_api_data');
+
+    Route::get('/admin/profile', [AdminProfileController::class, 'show'])->name('admin_profile');
+    Route::put('/admin/profile/update', [AdminProfileInformationController::class, 'update'])->name('admin_profile_update');
+
+
 });
