@@ -141,7 +141,7 @@ class AdminController extends Controller
 
     public function admin_api_data()
     {
-        return Inertia::render('Admin/Dashboard');
+        return Inertia::render('Admin/APIData');
     }
 
 
