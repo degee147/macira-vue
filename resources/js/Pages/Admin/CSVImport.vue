@@ -7,6 +7,7 @@ import FileInput from '@/Components/FileInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { TailwindPagination } from 'laravel-vue-pagination';
+import Pagination from '@/components/Pagination.vue';
 import axios from 'axios';
 
 const form = useForm({
@@ -65,7 +66,6 @@ const submit = () => {
 };
 
 const handleLinkClick = (link) => {
-    console.log("link", link);
     if (link.url) {
         fetchItems(link.url);
     }
@@ -78,7 +78,7 @@ const fetchItems = (url = null) => {
     }
     axios.get(link)
         .then(response => {
-            console.log("response", response);
+            // console.log("response", response);
             items.value = response.data.data;
             current_page = response.data.current_page;
             last_page = response.data.last_page;
@@ -87,9 +87,6 @@ const fetchItems = (url = null) => {
             links = response.data.links;
             from = response.data.from;
             to = response.data.to;
-
-
-
         })
         .catch(error => {
             console.error('Error fetching items', error);
@@ -157,7 +154,7 @@ onMounted(() => {
                             <!-- <template> -->
                             <div>
 
-                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
                                     <!-- <div class="pb-4 bg-white dark:bg-gray-900">
                                         <label for="table-search" class="sr-only">Search</label>
                                         <div class="relative mt-1">
@@ -175,6 +172,10 @@ onMounted(() => {
                                                 placeholder="Search for items">
                                         </div>
                                     </div> -->
+
+                                    <pagination :from="from" :to="to" :total="total" :current_page="current_page"
+                                        :links="links" @link-clicked="handleLinkClick" />
+                                    <br>
                                     <table>
                                         <thead
                                             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -189,6 +190,10 @@ onMounted(() => {
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <div v-if="items.length === 0"
+                                                class="text-center py-4 text-gray-500 dark:text-gray-400">
+                                                No items available.
+                                            </div>
                                             <tr v-for="item in items"
                                                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                 <td scope="row"
@@ -203,31 +208,9 @@ onMounted(() => {
                                     </table>
 
                                     <br>
-                                    <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
-                                        aria-label="Table navigation">
-                                        <span
-                                            class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing
-                                            <span class="font-semibold text-gray-900 dark:text-white">{{ from }}-{{ to
-                                            }}</span> of
-                                            <span class="font-semibold text-gray-900 dark:text-white">{{ total
-                                            }}</span></span>
-                                        <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                                            <li v-for="link in links">
+                                    <pagination :from="from" :to="to" :total="total" :current_page="current_page"
+                                        :links="links" @link-clicked="handleLinkClick" />
 
-                                                <a v-if="parseInt(link.label) === current_page" :href="link.url"
-                                                    @click.prevent="handleLinkClick(link)" aria-current="page"
-                                                    class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
-                                                    {{ link.label.replace(/&[^;]+;/g, '') }}</a>
-
-                                                <a v-else href="#" @click.prevent="handleLinkClick(link)"
-                                                    class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{
-                                                        link.label.replace(/&[^;]+;/g, '') }}</a>
-
-
-                                            </li>
-
-                                        </ul>
-                                    </nav>
                                     <br>
 
 
@@ -278,4 +261,5 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-    </AdminLayout></template>
+    </AdminLayout>
+</template>
