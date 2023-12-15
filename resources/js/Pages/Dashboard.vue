@@ -1,5 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 </script>
 
@@ -7,7 +8,7 @@ import Welcome from '@/Components/Welcome.vue';
     <AppLayout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
+                Hi..  {{ $page.props.auth.user.name }}
             </h2>
         </template>
 
