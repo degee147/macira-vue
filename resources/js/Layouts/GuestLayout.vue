@@ -10,6 +10,8 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 defineProps({
     title: String,
+    userLoggedIn: Boolean,
+    adminUserLoggedIn: Boolean,
 });
 
 const showingNavigationDropdown = ref(false);
@@ -71,7 +73,13 @@ const logout = () => {
                                     Register
                                 </NavLink>
                             </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div v-if="$page.props.adminUserLoggedIn" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('admin_dashboard')" :active="route().current('admin_dashboard')">
+                                    Admin Dashoard
+                                </NavLink>
+                            </div>
+
+                            <div v-if="!$page.props.adminUserLoggedIn" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('admin_login')" :active="route().current('admin_login')">
                                     Admin Login
                                 </NavLink>

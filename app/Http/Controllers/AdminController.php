@@ -11,8 +11,9 @@ use Laravel\Jetstream\Jetstream;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
-use App\Http\Responses\LoginResponse;
+use Illuminate\Support\Facades\Auth;
 
+use App\Http\Responses\LoginResponse;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Laravel\Fortify\Contracts\LogoutResponse;
 use App\Actions\Fortify\AttemptToAuthenticate;
@@ -43,13 +44,13 @@ class AdminController extends Controller
         $this->guard = $guard;
     }
 
-    public function loginForm()
+    public function loginForm(Request $request)
     {
         return Inertia::render('Admin/Login', ['guard' => 'admin']);
     }
 
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         return Inertia::render('Admin/Dashboard');
     }
