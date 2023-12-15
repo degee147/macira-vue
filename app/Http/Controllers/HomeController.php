@@ -17,7 +17,6 @@ class HomeController extends Controller
         return Inertia::render('Welcome', [
             'userLoggedIn' => $userLoggedIn,
             'adminUserLoggedIn' => $adminUserLoggedIn,
-            'yeah' => "yeah",
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'canAdminLogin' => Route::has('adminlogin'),

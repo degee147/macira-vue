@@ -75,7 +75,7 @@ const logout = () => {
                             </div>
                             <div v-if="$page.props.adminUserLoggedIn" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('admin_dashboard')" :active="route().current('admin_dashboard')">
-                                    Admin Dashoard
+                                    Admin Dashboard
                                 </NavLink>
                             </div>
 

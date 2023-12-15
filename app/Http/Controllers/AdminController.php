@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use Faker\Generator;
 use Inertia\Inertia;
+use League\Csv\Reader;
+use App\Models\CsvImport;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
 use Illuminate\Routing\Pipeline;
 use Laravel\Jetstream\Jetstream;
 use Illuminate\Routing\Controller;
+
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
-
 use App\Http\Responses\LoginResponse;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Laravel\Fortify\Contracts\LogoutResponse;
@@ -46,7 +49,7 @@ class AdminController extends Controller
 
     public function loginForm(Request $request)
     {
-        return Inertia::render('Admin/Login', ['guard' => 'admin']);
+        return Inertia::render('Admin/Login');
     }
 
 
@@ -55,10 +58,74 @@ class AdminController extends Controller
         return Inertia::render('Admin/Dashboard');
     }
 
+    public function registered_users(Request $request)
+    {
+        return Inertia::render('Admin/Dashboard');
+    }
+
 
     public function admin_csv_import()
     {
-        return Inertia::render('Admin/Dashboard');
+        return Inertia::render('Admin/CSVImport');
+    }
+
+    public function admin_csv_sample()
+    {
+        // Set the CSV file name
+        // $csvFileName = 'output.csv';
+        $csvFileName = public_path('output.csv');
+
+        // Open the CSV file for writing
+        $csvFile = fopen($csvFileName, 'w');
+
+        // Write header row to the CSV file
+        fputcsv($csvFile, ['id', 'name', 'email', 'phone', 'address']);
+
+        // Generate and write data rows using Faker
+        // $faker = Faker::create();
+        // Resolve the Faker instance from the service container
+        $faker = resolve(Generator::class);
+
+        for ($i = 1; $i <= 150; $i++) {
+            $rowData = [
+                $i,
+                $faker->name,
+                $faker->email,
+                $faker->phoneNumber,
+                $faker->address('shortAddress'),
+            ];
+            fputcsv($csvFile, $rowData);
+        }
+
+        // Close the CSV file
+        fclose($csvFile);
+        // Provide the CSV file for download
+        return response()->file($csvFileName)->deleteFileAfterSend(true);
+        // Download the CSV file
+        // return response()->download($csvFileName)->deleteFileAfterSend(true);
+    }
+
+    public function uploadCSV(Request $request)
+    {
+
+        $data = $request->all();
+        $base64Content = $data["csv"];
+
+        $base64Content = substr($base64Content, strpos($base64Content, ',') + 1);
+        $b64 = base64_decode(preg_replace('#^data:text/w+;base64,#i', '', $base64Content));
+        $csv = Reader::createFromString($b64);
+        $csv->setHeaderOffset(0);
+        $header = $csv->getHeader();
+        $records = $csv->getRecords();
+        foreach ($records as $record) {
+            $csv = CsvImport::where('id', $record['id'])->first();
+            if (empty($csv)) {
+                $csv = CsvImport::create($record);
+            }
+        }
+
+
+        return response()->json(['success' => true, 'message' => 'CSV file uploaded and processed']);
     }
 
     public function admin_api_data()
@@ -67,32 +134,6 @@ class AdminController extends Controller
     }
 
 
-    public function sessions(Request $request)
-    {
-        if (config('session.driver') !== 'database') {
-            return collect();
-        }
-
-        return collect(
-            DB::connection(config('session.connection'))->table(config('session.table', 'sessions'))
-                ->where('user_id', $request->user()->getAuthIdentifier())
-                ->orderBy('last_activity', 'desc')
-                ->get()
-        )->map(function ($session) use ($request) {
-            $agent = $this->createAgent($session);
-
-            return (object) [
-                'agent' => [
-                    'is_desktop' => $agent->isDesktop(),
-                    'platform' => $agent->platform(),
-                    'browser' => $agent->browser(),
-                ],
-                'ip_address' => $session->ip_address,
-                'is_current_device' => $session->id === $request->session()->getId(),
-                'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
-            ];
-        });
-    }
     /**
      * Show the login view.
      *
