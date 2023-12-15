@@ -1,16 +1,14 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 </script>
 
 <template>
-    <AppLayout title="Admin Dashboard">
+    <AdminLayout title="Admin Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Hi..  {{ $page.props.auth.user.name }}
             </h2>
-            <h3>Admin Dashboard</h3>
         </template>
 
         <div class="py-12">
@@ -20,5 +18,5 @@ import Welcome from '@/Components/Welcome.vue';
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </AdminLayout>
 </template>

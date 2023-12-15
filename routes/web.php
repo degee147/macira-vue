@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\RegisteredUserController;
 
 /*
@@ -36,4 +37,5 @@ Route::post('/admin/login', [AdminController::class, 'store'])->name('admin_logi
 
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin_dashboard');
+    Route::get('/admin/profile', [AdminProfileController::class, 'show'])->name('admin_profile');
 });
