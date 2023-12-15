@@ -2,11 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import TextInput from '@/Components/TextInput.vue';
-import FileInput from '@/Components/FileInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { TailwindPagination } from 'laravel-vue-pagination';
 import Pagination from '@/components/Pagination.vue';
 import axios from 'axios';
 
