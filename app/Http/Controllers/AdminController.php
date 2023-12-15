@@ -55,6 +55,17 @@ class AdminController extends Controller
     }
 
 
+    public function admin_csv_import()
+    {
+        return Inertia::render('Admin/Dashboard');
+    }
+
+    public function admin_api_data()
+    {
+        return Inertia::render('Admin/Dashboard');
+    }
+
+
     public function sessions(Request $request)
     {
         if (config('session.driver') !== 'database') {
@@ -63,9 +74,9 @@ class AdminController extends Controller
 
         return collect(
             DB::connection(config('session.connection'))->table(config('session.table', 'sessions'))
-                    ->where('user_id', $request->user()->getAuthIdentifier())
-                    ->orderBy('last_activity', 'desc')
-                    ->get()
+                ->where('user_id', $request->user()->getAuthIdentifier())
+                ->orderBy('last_activity', 'desc')
+                ->get()
         )->map(function ($session) use ($request) {
             $agent = $this->createAgent($session);
 
