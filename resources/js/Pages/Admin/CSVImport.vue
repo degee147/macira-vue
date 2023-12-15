@@ -126,37 +126,65 @@ onMounted(() => {
                             <h1 class="mt-8 text-2xl font-medium text-gray-900">
                                 Items
                             </h1>
+                            <br>
                             <!-- <template> -->
                             <div>
+                                <div class="relative overflow-x-auto">
+                                    <table>
+                                        <thead
+                                            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr>
+
+                                                <th scope="col" class="px-6 py-3">Id</th>
+                                                <th scope="col" class="px-6 py-3">Name</th>
+                                                <th scope="col" class="px-6 py-3">Email</th>
+                                                <th scope="col" class="px-6 py-3">Phone</th>
+                                                <th scope="col" class="px-6 py-3">Address</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="item in items"
+                                                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                <td scope="row"
+                                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {{ item.id }}</td>
+                                                <td class="px-6 py-4">{{ item.name }}</td>
+                                                <td class="px-6 py-4">{{ item.email }}</td>
+                                                <td class="px-6 py-4">{{ item.phone }}</td>
+                                                <td class="px-6 py-4">{{ item.address }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- <template> -->
+                                <!-- <div class="pagination-container">
+                                    <h1>Hello</h1>
+                                    <button v-if="currentPage > 1" @click="changePage(currentPage - 1)"
+                                        class="pagination-button">
+                                        Previous
+                                    </button>
+
+                                    <button v-for="pageNumber in pages" :key="pageNumber" @click="changePage(pageNumber)"
+                                        :class="{ 'pagination-button-active': pageNumber === currentPage, 'pagination-button': pageNumber !== currentPage }">
+                                        {{ pageNumber }}
+                                    </button>
+
+                                    <button v-if="currentPage < totalPages" @click="changePage(currentPage + 1)"
+                                        class="pagination-button">
+                                        Next
+                                    </button>
+                                </div> -->
 
 
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Phone</th>
-                                            <th>Address</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="item in items">
-                                            <td>{{ item.id }}</td>
-                                            <td>{{ item.name }}</td>
-                                            <td>{{ item.email }}</td>
-                                            <td>{{ item.phone }}</td>
-                                            <td>{{ item.address }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
 
+                                <!-- </template> -->
                                 <!-- Pagination -->
                                 <!-- <LaravelVuePagination :data="items" @pagination-change-page="fetchData"> -->
                                 <!-- </LaravelVuePagination> -->
-                                <template>
-                                    <TailwindPagination :data="items" @pagination-change-page="fetchItems" />
-                                </template>
+                                <!-- <template> -->
+                                <!-- <TailwindPagination :data="items" @pagination-change-page="fetchItems" /> -->
+                                <!-- </template> -->
                                 <!-- <table> -->
                                 <!-- Display your table headers here -->
 
