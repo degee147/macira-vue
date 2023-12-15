@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -37,28 +40,31 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Fortify::authenticateUsing(function (Request $request) {
-        //     $isAdmin = $request->filled('is_admin') && $request->is_admin; // Check if the request indicates an admin login
+        Fortify::authenticateUsing(function (Request $request) {
 
-        //     // $username = filter_var($request->email_or_username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+            // Check if the request indicates an admin login
+            $isAdmin = $request->filled('is_admin') && $request->is_admin;
 
-        //     $credentials = [
-        //         'email_or_username' => $request->email_or_username,
-        //         'password' => $request->password,
-        //     ];
+            // $username = filter_var($request->email_or_username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        //     if ($isAdmin) {
-        //         $user = Admin::where('email', $credentials['email_or_username'])->orWhere('username', $credentials['email_or_username'])->first();
-        //     } else {
-        //         $user = User::where('email', $credentials['email_or_username'])->first();
-        //     }
+            $credentials = [
+                'email_or_username' => $request->email_or_username,
+                'password' => $request->password,
+            ];
 
-        //     if ($user && Hash::check($credentials['password'], $user->password)) {
-        //         return $user;
-        //     }
 
-        //     return null;
-        // });
+            if ($isAdmin) {
+                $user = Admin::where('email', $credentials['email_or_username'])->orWhere('username', $credentials['email_or_username'])->first();
+            } else {
+                $user = User::where('email', $credentials['email_or_username'])->orWhere('username', $credentials['email_or_username'])->first();
+            }
+
+            if ($user && Hash::check($credentials['password'], $user->password)) {
+                return $user;
+            }
+
+            return null;
+        });
 
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);

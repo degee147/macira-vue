@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Auth\StatefulGuard;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Features;
 use Illuminate\Routing\Pipeline;
+use Illuminate\Routing\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Responses\LoginResponse;
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Laravel\Fortify\Contracts\LogoutResponse;
+
+use App\Actions\Fortify\AttemptToAuthenticate;
+use Laravel\Fortify\Contracts\LoginViewResponse;
 use Laravel\Fortify\Actions\CanonicalizeUsername;
 use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
 use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
-use Laravel\Fortify\Contracts\LoginViewResponse;
-use Laravel\Fortify\Contracts\LogoutResponse;
-use Laravel\Fortify\Features;
-use Laravel\Fortify\Fortify;
-use Laravel\Fortify\Http\Requests\LoginRequest;
-
-use App\Http\Responses\LoginResponse;
-use App\Actions\Fortify\AttemptToAuthenticate;
 use App\Actions\Fortify\RedirectIfTwoFactorAuthenticatable;
 
 class AdminController extends Controller
@@ -42,7 +43,13 @@ class AdminController extends Controller
 
     public function loginForm()
     {
-        return view('auth.login_admin', ['guard' => 'admin']);
+        return Inertia::render('Admin/Login', ['guard' => 'admin']);
+    }
+
+
+    public function dashboard()
+    {
+        return Inertia::render('Admin/Dashboard');
     }
 
     /**

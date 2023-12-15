@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Auth\StatefulGuard;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Features;
 use Illuminate\Routing\Pipeline;
+use Illuminate\Routing\Controller;
+use App\Http\Responses\LoginResponse;
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Laravel\Fortify\Contracts\LogoutResponse;
+use App\Actions\Fortify\AttemptToAuthenticate;
+use Laravel\Fortify\Http\Requests\LoginRequest;
+use Laravel\Fortify\Contracts\LoginViewResponse;
+
 use Laravel\Fortify\Actions\CanonicalizeUsername;
 use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
 use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
-use Laravel\Fortify\Contracts\LoginViewResponse;
-use Laravel\Fortify\Contracts\LogoutResponse;
-use Laravel\Fortify\Features;
-use Laravel\Fortify\Fortify;
-use Laravel\Fortify\Http\Requests\LoginRequest;
-
-use App\Http\Responses\LoginResponse;
-use App\Actions\Fortify\AttemptToAuthenticate;
 use App\Actions\Fortify\RedirectIfTwoFactorAuthenticatable;
 
 class UserController extends Controller
@@ -42,7 +43,7 @@ class UserController extends Controller
 
     public function loginForm()
     {
-        return view('auth.login', ['guard' => 'web']);
+        return Inertia::render('Auth/Login', ['guard' => 'admin']);
     }
 
     /**
@@ -93,7 +94,7 @@ class UserController extends Controller
         return (new Pipeline(app()))->send($request)->through(array_filter([
             config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
             config('fortify.lowercase_usernames') ? CanonicalizeUsername::class : null,
-            Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
+            // Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
             AttemptToAuthenticate::class,
             PrepareAuthenticatedSession::class,
         ]));

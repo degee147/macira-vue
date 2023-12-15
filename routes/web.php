@@ -3,6 +3,8 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RegisteredUserController;
 
@@ -17,18 +19,21 @@ use App\Http\Controllers\RegisteredUserController;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'canAdminLogin' => Route::has('adminlogin'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-})->name('home');
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+// Route::get('/login', [UserController::class, 'loginForm'])->name('login');
+// Route::post('/login', [UserController::class, 'store'])->name('login');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+
+
+Route::get('/admin/login', [AdminController::class, 'loginForm'])->name('admin_login');
+Route::post('/admin/login', [AdminController::class, 'store'])->name('admin_login_post');
+
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin_dashboard');
 });

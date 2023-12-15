@@ -54,13 +54,10 @@ const logout = () => {
                                 </NavLink>
                             </div>
 
-                            <div v-if="$page.props.auth.user">
-                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                    <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                        Dashboard
-                                    </NavLink>
-                                </div>
-
+                            <div v-if="$page.props.auth.user" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                                    Dashboard
+                                </NavLink>
                             </div>
                             <!-- Navigation Links -->
                             <div v-if="!$page.props.auth.user" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -75,7 +72,7 @@ const logout = () => {
                                 </NavLink>
                             </div>
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('login')" :active="route().current('login')">
+                                <NavLink :href="route('admin_login')" :active="route().current('admin_login')">
                                     Admin Login
                                 </NavLink>
                             </div>

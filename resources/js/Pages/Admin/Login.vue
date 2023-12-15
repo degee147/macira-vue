@@ -24,7 +24,8 @@ const submit = () => {
     form.transform(data => ({
         ...data,
         remember: form.remember ? 'on' : '',
-    })).post(route('login'), {
+        is_admin: '1',
+    })).post(route('admin_login_post'), {
         onFinish: () => form.reset('password'),
     });
 };
@@ -32,7 +33,7 @@ const submit = () => {
 
 
 <template>
-    <GuestLayout title="Login">
+    <GuestLayout title="Admin Login">
 
         <AuthenticationCard>
             <template #logo>
@@ -45,12 +46,10 @@ const submit = () => {
 
             <form @submit.prevent="submit">
                 <div>
-                    <InputLabel for="email" value="Email or Username" />
-                    <TextInput id="email" v-model="form.email_or_username" type="text" class="mt-1 block w-full" required
-                        autofocus autocomplete="email_or_username" />
+                    <InputLabel for="email_or_username" value="Email or Username" />
+                    <TextInput id="email_or_username" v-model="form.email_or_username" type="text" class="mt-1 block w-full" required autofocus
+                        autocomplete="email_or_username" />
                     <InputError class="mt-2" :message="form.errors.email_or_username" />
-
-                    <!-- {{ console.log('form.errors', form.errors) }} -->
                 </div>
 
                 <div class="mt-4">
