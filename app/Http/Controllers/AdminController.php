@@ -69,6 +69,15 @@ class AdminController extends Controller
         return Inertia::render('Admin/CSVImport');
     }
 
+    public function csvData()
+    {
+        $items = CsvImport::paginate(10);
+        return response()->json($items);
+        // return Inertia::render('Admin/CSVItems', ['items' => $items]);
+        // return inertia('Items/Index', [
+        //     'items' => $items,
+        // ]);
+    }
     public function admin_csv_sample()
     {
         // Set the CSV file name

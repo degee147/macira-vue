@@ -41,6 +41,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/profile', [AdminProfileController::class, 'show'])->name('admin_profile');
     Route::get('/admin/csv-import', [AdminController::class, 'admin_csv_import'])->name('admin_csv_import');
     Route::post('/admin/csv-upload', [AdminController::class, 'uploadCSV'])->name('admin_csv_upload');
+    Route::get('/admin/csv-data', [AdminController::class, 'csvData'])->name('admin_csv_data');
     Route::get('/admin/csv-sample', [AdminController::class, 'admin_csv_sample'])->name('admin_csv_sample');
     Route::get('/admin/api-data', [AdminController::class, 'admin_api_data'])->name('admin_api_data');
 });

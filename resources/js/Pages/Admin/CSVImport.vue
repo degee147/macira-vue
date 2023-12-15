@@ -1,11 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import TextInput from '@/Components/TextInput.vue';
 import FileInput from '@/Components/FileInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { TailwindPagination } from 'laravel-vue-pagination';
 import axios from 'axios';
 
 const form = useForm({
@@ -13,13 +14,8 @@ const form = useForm({
 });
 
 const dataUrl = ref('');
-
-// const handleFileChange = (dataUrl) => {
-//     // Update the dataUrl ref
-//     dataUrl.value = dataUrl;
-//     console.log('data', dataUrl)
-// };
-
+let items = ref([]);
+let currentPage = 1;
 const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -49,6 +45,7 @@ const submit = () => {
         }).then(response => {
             dataUrl.value = '';
             input.value = '';
+            fetchItems();
             alert(response.data.message);
         }).catch(error => {
             // Handle errors if necessary
@@ -59,6 +56,24 @@ const submit = () => {
         alert("Please provide a file to upload");
     }
 };
+
+const fetchItems = (page = 1) => {
+    // Make an API request to fetch paginated items
+    axios.get(route('admin_csv_data') + `?page=${page}`)
+        .then(response => {
+            items.value = response.data.data;
+            console.log("items", items);
+            currentPage = response.data.current_page;
+        })
+        .catch(error => {
+            console.error('Error fetching items', error);
+        });
+};
+
+// Call fetchItems when the component is mounted
+onMounted(() => {
+    fetchItems();
+});
 
 </script>
 
@@ -107,6 +122,54 @@ const submit = () => {
 
                                 </form>
                             </div>
+
+                            <h1 class="mt-8 text-2xl font-medium text-gray-900">
+                                Items
+                            </h1>
+                            <!-- <template> -->
+                            <div>
+
+
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Address</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in items">
+                                            <td>{{ item.id }}</td>
+                                            <td>{{ item.name }}</td>
+                                            <td>{{ item.email }}</td>
+                                            <td>{{ item.phone }}</td>
+                                            <td>{{ item.address }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- Pagination -->
+                                <!-- <LaravelVuePagination :data="items" @pagination-change-page="fetchData"> -->
+                                <!-- </LaravelVuePagination> -->
+                                <template>
+                                    <TailwindPagination :data="items" @pagination-change-page="fetchItems" />
+                                </template>
+                                <!-- <table> -->
+                                <!-- Display your table headers here -->
+
+                                <!-- <tbody> -->
+                                <!-- <tr v-for="item in items" :key="item.id"> -->
+                                <!-- Display your table rows here -->
+                                <!-- </tr> -->
+                                <!-- </tbody> -->
+                                <!-- </table> -->
+
+                                <!-- <pagination :data="items" @pagination-change-page="fetchItems"></pagination> -->
+                            </div>
+                            <!-- </template> -->
                         </div>
                     </div>
                 </div>
