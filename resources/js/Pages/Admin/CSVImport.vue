@@ -173,7 +173,7 @@ onMounted(() => {
                                     <pagination :from="from" :to="to" :total="total" :current_page="current_page"
                                         :links="links" @link-clicked="handleLinkClick" />
                                     <br>
-                                    <table>
+                                    <table style="width:100%;">
                                         <thead
                                             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                             <tr>
@@ -189,7 +189,8 @@ onMounted(() => {
                                         <tbody>
                                             <div v-if="items.length === 0"
                                                 class="text-center py-4 text-gray-500 dark:text-gray-400">
-                                                No items available.
+
+                                                <td class="px-6 py-4">No items available.</td>
                                             </div>
                                             <tr v-for="item in items"
                                                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -212,45 +213,7 @@ onMounted(() => {
 
 
                                 </div>
-                                <!-- <template> -->
-                                <!-- <div class="pagination-container">
-                                    <h1>Hello</h1>
-                                    <button v-if="current_page > 1" @click="changePage(current_page - 1)"
-                                        class="pagination-button">
-                                        Previous
-                                    </button>
 
-                                    <button v-for="pageNumber in pages" :key="pageNumber" @click="changePage(pageNumber)"
-                                        :class="{ 'pagination-button-active': pageNumber === current_page, 'pagination-button': pageNumber !== current_page }">
-                                        {{ pageNumber }}
-                                    </button>
-
-                                    <button v-if="current_page < totalPages" @click="changePage(current_page + 1)"
-                                        class="pagination-button">
-                                        Next
-                                    </button>
-                                </div> -->
-
-
-
-                                <!-- </template> -->
-                                <!-- Pagination -->
-                                <!-- <LaravelVuePagination :data="items" @pagination-change-page="fetchData"> -->
-                                <!-- </LaravelVuePagination> -->
-                                <!-- <template> -->
-                                <!-- <TailwindPagination :data="items" @pagination-change-page="fetchItems" /> -->
-                                <!-- </template> -->
-                                <!-- <table> -->
-                                <!-- Display your table headers here -->
-
-                                <!-- <tbody> -->
-                                <!-- <tr v-for="item in items" :key="item.id"> -->
-                                <!-- Display your table rows here -->
-                                <!-- </tr> -->
-                                <!-- </tbody> -->
-                                <!-- </table> -->
-
-                                <!-- <pagination :data="items" @pagination-change-page="fetchItems"></pagination> -->
                             </div>
                             <!-- </template> -->
                         </div>

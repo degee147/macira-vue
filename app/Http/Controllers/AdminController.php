@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Faker\Generator;
 use Inertia\Inertia;
 use League\Csv\Reader;
@@ -11,8 +12,8 @@ use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
 use Illuminate\Routing\Pipeline;
 use Laravel\Jetstream\Jetstream;
-use Illuminate\Routing\Controller;
 
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
@@ -60,7 +61,7 @@ class AdminController extends Controller
 
     public function registered_users(Request $request)
     {
-        return Inertia::render('Admin/Dashboard');
+        return Inertia::render('Admin/RegisteredUsers');
     }
 
 
@@ -69,14 +70,15 @@ class AdminController extends Controller
         return Inertia::render('Admin/CSVImport');
     }
 
+    public function admin_users_data()
+    {
+        $items = User::paginate(10);
+        return response()->json($items);
+    }
     public function csvData()
     {
         $items = CsvImport::paginate(10);
         return response()->json($items);
-        // return Inertia::render('Admin/CSVItems', ['items' => $items]);
-        // return inertia('Items/Index', [
-        //     'items' => $items,
-        // ]);
     }
     public function admin_csv_sample()
     {
