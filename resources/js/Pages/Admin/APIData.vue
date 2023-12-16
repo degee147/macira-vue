@@ -100,10 +100,8 @@ onMounted(() => {
                                             <th scope="col" class="px-6 py-3">Category</th>
                                             <th scope="col" class="px-6 py-3">Description</th>
                                             <th scope="col" class="px-6 py-3">Auth</th>
-                                            <th scope="col" class="px-6 py-3">Https</th>
+                                            <!-- <th scope="col" class="px-6 py-3">Https</th> -->
                                             <th scope="col" class="px-6 py-3">Cors</th>
-                                            <th scope="col" class="px-6 py-3">Link</th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -117,13 +115,13 @@ onMounted(() => {
                                             <td scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{ item.id }}</td>
-                                            <td class="px-6 py-4">{{ item.api }}</td>
+
+                                            <td class="px-6 py-4"><a target="_blank" :href="item.link">{{ item.api }}</a></td>
                                             <td class="px-6 py-4">{{ item.category }}</td>
                                             <td class="px-6 py-4">{{ item.description }}</td>
                                             <td class="px-6 py-4">{{ item.auth }}</td>
-                                            <td class="px-6 py-4">{{ item.https }}</td>
+                                            <!-- <td class="px-6 py-4">{{ item.https }}</td> -->
                                             <td class="px-6 py-4">{{ item.cors }}</td>
-                                            <td class="px-6 py-4">{{ item.link }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
