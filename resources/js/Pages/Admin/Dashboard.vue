@@ -9,7 +9,7 @@ const logout = () => {
 </script>
 
 <template>
-    <AdminLayout title="Registered Users">
+    <AdminLayout title="Admin Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Admin Dashboard
