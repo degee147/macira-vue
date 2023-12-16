@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use App\Mail\SendAdminAlertMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
 use App\Mail\SendEmailToActiveUsersMail;
@@ -40,6 +41,7 @@ class SendEmailToActiveUsers implements ShouldQueue
             }
 
         } catch (\Exception $e) {
+            Mail::to('tech@nextpayday.co')->send(new SendAdminAlertMail('Some troubles occurred'));
             // Handle exceptions
             $this->fail($e);
         }

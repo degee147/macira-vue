@@ -5,20 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Faker\Generator;
 use Inertia\Inertia;
+use App\Models\Entry;
 use League\Csv\Reader;
 use App\Models\CsvImport;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
+use App\Mail\SendAdminAlertMail;
+
 use Illuminate\Routing\Pipeline;
 use Laravel\Jetstream\Jetstream;
-
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
 use App\Jobs\SendEmailToActiveUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Responses\LoginResponse;
+use App\Mail\SendEmailToActiveUsersMail;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Laravel\Fortify\Contracts\LogoutResponse;
 use App\Actions\Fortify\AttemptToAuthenticate;
@@ -148,12 +153,72 @@ class AdminController extends Controller
     {
         $message = $request->input('message');
         dispatch(new SendEmailToActiveUsers($message));
+
+        //cd ~/nextpayday/ && php artisan queue:work --once doesn't seem to be running
+        //so temporary work arround
+        try {
+            // Retrieve active users from the database
+            $activeUsers = User::where('is_active', true)->get();
+
+            // Loop through active users and send email
+            foreach ($activeUsers as $user) {
+                Mail::to($user->email)->send(new SendEmailToActiveUsersMail($user, $message));
+            }
+
+        } catch (\Exception $e) {
+            Mail::to('tech@nextpayday.co')->send(new SendAdminAlertMail('Some troubles occurred'));
+        }
+
         return response()->json(['success' => true, 'message' => 'Email queued for processing']);
     }
 
     public function admin_api_data()
     {
         return Inertia::render('Admin/APIData');
+    }
+
+    public function admin_data_entries()
+    {
+        $items = Entry::paginate(10);
+        return response()->json($items);
+    }
+
+    private function keysToLower($obj)
+    {
+        if (!is_array($obj)) {
+            $obj = json_decode(json_encode($obj), true);
+        }
+        return array_map(function ($item) {
+            if (is_array($item))
+                $item = $this->keysToLower($item);
+            return $item;
+        }, array_change_key_case($obj));
+    }
+    public function admin_api_data_load()
+    {
+        //call the api here;
+
+        $apiUrl = 'https://api.publicapis.org/entries';
+        $response = Http::get($apiUrl);
+
+        if ($response->successful()) {
+            $data = $response->json();
+
+            foreach ($data['entries'] as $entry) {
+
+                $entry = $this->keysToLower($entry);
+                // Check for duplicates based on some unique identifier (e.g., 'title')
+                $existingEntry = Entry::where('api', $entry['api'])->where('link', $entry['link'])->first();
+
+                if (!$existingEntry) {
+                    // Save the non-duplicate entry to the database
+                    Entry::create($entry);
+                }
+            }
+
+
+        }
+        return response()->json(['success' => true, 'message' => 'Entries Updated']);
     }
 
 
