@@ -16,6 +16,7 @@ use Laravel\Jetstream\Jetstream;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\LoginRequest;
+use App\Jobs\SendEmailToActiveUsers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Responses\LoginResponse;
 use Illuminate\Contracts\Auth\StatefulGuard;
@@ -137,6 +138,17 @@ class AdminController extends Controller
 
 
         return response()->json(['success' => true, 'message' => 'CSV file uploaded and processed']);
+    }
+
+    public function send_mail()
+    {
+        return Inertia::render('Admin/SendMail');
+    }
+    public function send_mail_post(Request $request)
+    {
+        $message = $request->input('message');
+        dispatch(new SendEmailToActiveUsers($message));
+        return response()->json(['success' => true, 'message' => 'Email queued for processing']);
     }
 
     public function admin_api_data()

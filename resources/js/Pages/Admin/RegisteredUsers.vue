@@ -80,6 +80,10 @@ onMounted(() => {
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div>
                         <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
+                            <a :href="route('send_mail')"
+                                class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                                Email Active Users
+                            </a>
                             <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
                                 <pagination :from="from" :to="to" :total="total" :current_page="current_page" :links="links"
                                     @link-clicked="handleLinkClick" />
@@ -94,6 +98,7 @@ onMounted(() => {
                                             <th scope="col" class="px-6 py-3">Name</th>
                                             <th scope="col" class="px-6 py-3">Username</th>
                                             <th scope="col" class="px-6 py-3">Email</th>
+                                            <th scope="col" class="px-6 py-3">Active</th>
 
                                         </tr>
                                     </thead>
@@ -114,6 +119,7 @@ onMounted(() => {
                                             <td class="text-center px-6 py-4">{{ item.name }}</td>
                                             <td class="text-center px-6 py-4">{{ item.username }}</td>
                                             <td class="text-center px-6 py-4">{{ item.email }}</td>
+                                            <td class="text-center px-6 py-4">{{ item.is_active ? 'YES' : 'NO' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
