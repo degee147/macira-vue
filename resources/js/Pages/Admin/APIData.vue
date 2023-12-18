@@ -74,8 +74,10 @@ onMounted(() => {
                 </h2>
                 <PrimaryButton type="submit" v-on:click="loadData" :disabled="loading"
                     class="mt-4 p-2 bg-blue-500 text-white rounded-md ml-auto">
-                    {{ loading ? 'Loading...' : 'Load Data' }}
+                    <span v-if="loading">Loading...</span>
+                    <span v-if="!loading">Load Data</span>
                 </PrimaryButton>
+
             </div>
         </template>
 
@@ -116,7 +118,8 @@ onMounted(() => {
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{ item.id }}</td>
 
-                                            <td class="px-6 py-4"><a target="_blank" :href="item.link">{{ item.api }}</a></td>
+                                            <td class="px-6 py-4"><a target="_blank" :href="item.link">{{ item.api }}</a>
+                                            </td>
                                             <td class="px-6 py-4">{{ item.category }}</td>
                                             <td class="px-6 py-4">{{ item.description }}</td>
                                             <td class="px-6 py-4">{{ item.auth }}</td>

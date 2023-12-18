@@ -81,9 +81,17 @@ class AdminController extends Controller
         $items = User::paginate(10);
         return response()->json($items);
     }
-    public function csvData()
+    public function csvData(Request $request)
     {
-        $items = CsvImport::paginate(10);
+        $search = $request->input('search');
+        $items = CsvImport::when($search, function ($query) use ($search) {
+            $query->where('name', 'LIKE', "%$search%")
+                ->orWhere('email', 'LIKE', "%$search%")
+                ->orWhere('phone', 'LIKE', "%$search%")
+                ->orWhere('address', 'LIKE', "%$search%");
+        })
+        ->paginate(10);
+
         return response()->json($items);
     }
     public function admin_csv_sample()

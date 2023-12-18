@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -10,7 +10,12 @@ import axios from 'axios';
 const form = useForm({
     csv: '',
 });
-
+const search = ref('');
+watch(search, (newValue, oldValue) => {
+    // Perform search operation here using the newValue
+    console.log('Search term changed:', newValue);
+    searchItems();
+});
 const dataUrl = ref('');
 let items = ref([]);
 let current_page = ref(1);
@@ -67,15 +72,27 @@ const handleLinkClick = (link) => {
         fetchItems(link.url);
     }
 }
+
+const searchItems = () => {
+    // Reset pagination values when performing a search
+    current_page = 1;
+    last_page = 1;
+
+    // Fetch items with the search query
+    fetchItems();
+};
+
 const fetchItems = (url = null) => {
-    // Make an API request to fetch paginated items
     let link = route('admin_csv_data');
     if (url) {
         link = url;
     }
-    axios.get(link)
+
+    // Include the search query in the API request if available
+    const searchQuery = search ? `&search=${search.value}` : '';
+
+    axios.get(`${link}?${searchQuery}`)
         .then(response => {
-            // console.log("response", response);
             items.value = response.data.data;
             current_page = response.data.current_page;
             last_page = response.data.last_page;
@@ -90,10 +107,13 @@ const fetchItems = (url = null) => {
         });
 };
 
+
 // Call fetchItems when the component is mounted
 onMounted(() => {
     fetchItems();
 });
+
+
 
 </script>
 
@@ -152,24 +172,34 @@ onMounted(() => {
                             <div>
 
                                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
-                                    <!-- <div class="pb-4 bg-white dark:bg-gray-900">
-                                        <label for="table-search" class="sr-only">Search</label>
-                                        <div class="relative mt-1">
-                                            <div
-                                                class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                                    <path stroke="currentColor" stroke-linecap="round"
-                                                        stroke-linejoin="round" stroke-width="2"
-                                                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                                </svg>
+                                    <div class="flex justify-end">
+                                        <div class="pb-4 bg-white dark:bg-gray-900">
+                                            <!-- <form @submit.prevent="searchItems"> -->
+                                            <div class="flex items-center">
+                                                <label for="table-search" class="sr-only">Search</label>
+                                                <div class="relative mt-1 flex items-center">
+                                                    <div
+                                                        class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none" viewBox="0 0 20 20">
+                                                            <path stroke="currentColor" stroke-linecap="round"
+                                                                stroke-linejoin="round" stroke-width="2"
+                                                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                                        </svg>
+                                                    </div>
+                                                    <input v-model="search" type="text" id="table-search"
+                                                        class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                        placeholder="Search for items">
+                                                </div>
+                                                <!-- <PrimaryButton type="submit"
+                                                    class="ml-2 p-2 bg-blue-500 text-white rounded-md">
+                                                    Search
+                                                </PrimaryButton> -->
                                             </div>
-                                            <input type="text" id="table-search"
-                                                class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                placeholder="Search for items">
+                                            <!-- </form> -->
                                         </div>
-                                    </div> -->
-
+                                    </div>
                                     <pagination :from="from" :to="to" :total="total" :current_page="current_page"
                                         :links="links" @link-clicked="handleLinkClick" />
                                     <br>
