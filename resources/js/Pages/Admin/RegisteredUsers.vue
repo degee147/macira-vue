@@ -38,8 +38,11 @@ const fetchItems = (url = null) => {
     if (url) {
         link = url;
     }
-    const searchQuery = search.value ? `&search=${search.value}` : '';
-    axios.get(`${link}?${searchQuery}`)
+    const url2 = new URL(link);
+    const params = url2.searchParams;
+    params.append("search", search.value);
+
+    axios.get(url2.toString())
         .then(response => {
             // console.log("response", response);
             items.value = response.data.data;

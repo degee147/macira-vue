@@ -84,11 +84,11 @@ const fetchItems = (url = null) => {
     if (url) {
         link = url;
     }
+    const url2 = new URL(link);
+    const params = url2.searchParams;
+    params.append("search", search.value);
 
-    // Include the search query in the API request if available
-    const searchQuery = search.value ? `&search=${search.value}` : '';
-
-    axios.get(`${link}?${searchQuery}`)
+    axios.get(url2.toString())
         .then(response => {
             items.value = response.data.data;
             current_page = response.data.current_page;
