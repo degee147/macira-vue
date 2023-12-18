@@ -74,11 +74,8 @@ const handleLinkClick = (link) => {
 }
 
 const searchItems = () => {
-    // Reset pagination values when performing a search
     current_page = 1;
     last_page = 1;
-
-    // Fetch items with the search query
     fetchItems();
 };
 
@@ -89,7 +86,7 @@ const fetchItems = (url = null) => {
     }
 
     // Include the search query in the API request if available
-    const searchQuery = search ? `&search=${search.value}` : '';
+    const searchQuery = search.value ? `&search=${search.value}` : '';
 
     axios.get(`${link}?${searchQuery}`)
         .then(response => {

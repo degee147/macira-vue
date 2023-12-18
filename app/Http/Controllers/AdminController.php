@@ -76,24 +76,49 @@ class AdminController extends Controller
         return Inertia::render('Admin/CSVImport');
     }
 
-    public function admin_users_data()
+    public function admin_users_data(Request $request)
     {
-        $items = User::paginate(10);
+        $search = $request->input('search');
+        $query = User::query();
+        if (!empty($search)) {
+            $query
+                ->orWhereRaw('LOWER(`name`) LIKE ? ', '%' . trim(strtolower($search)) . '%')
+                ->orWhereRaw('LOWER(`email`) LIKE ? ', '%' . trim(strtolower($search)) . '%')
+                ->orWhereRaw('LOWER(`username`) LIKE ? ', '%' . trim(strtolower($search)) . '%');
+        }
+        $items = $query->paginate(10);
         return response()->json($items);
     }
+
     public function csvData(Request $request)
     {
         $search = $request->input('search');
-        $items = CsvImport::when($search, function ($query) use ($search) {
-            $query->where('name', 'LIKE', "%$search%")
-                ->orWhere('email', 'LIKE', "%$search%")
-                ->orWhere('phone', 'LIKE', "%$search%")
-                ->orWhere('address', 'LIKE', "%$search%");
-        })
-        ->paginate(10);
-
+        $query = CsvImport::query();
+        if (!empty($search)) {
+            $query
+                ->orWhereRaw('LOWER(`name`) LIKE ? ', '%' . trim(strtolower($search)) . '%')
+                ->orWhereRaw('LOWER(`email`) LIKE ? ', '%' . trim(strtolower($search)) . '%')
+                ->orWhereRaw('LOWER(`phone`) LIKE ? ', '%' . trim(strtolower($search)) . '%')
+                ->orWhereRaw('LOWER(`address`) LIKE ? ', '%' . trim(strtolower($search)) . '%');
+        }
+        $items = $query->paginate(10);
         return response()->json($items);
     }
+
+    public function admin_data_entries(Request $request)
+    {
+        $search = $request->input('search');
+        $query = Entry::query();
+        if (!empty($search)) {
+            $query
+                ->orWhereRaw('LOWER(`api`) LIKE ? ', '%' . trim(strtolower($search)) . '%')
+                ->orWhereRaw('LOWER(`description`) LIKE ? ', '%' . trim(strtolower($search)) . '%')
+                ->orWhereRaw('LOWER(`category`) LIKE ? ', '%' . trim(strtolower($search)) . '%');
+        }
+        $items = $query->paginate(10);
+        return response()->json($items);
+    }
+
     public function admin_csv_sample()
     {
         // Set the CSV file name
@@ -185,11 +210,7 @@ class AdminController extends Controller
         return Inertia::render('Admin/APIData');
     }
 
-    public function admin_data_entries()
-    {
-        $items = Entry::paginate(10);
-        return response()->json($items);
-    }
+
 
     private function keysToLower($obj)
     {

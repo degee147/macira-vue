@@ -1,6 +1,6 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import Pagination from '@/components/Pagination.vue';
 
@@ -14,6 +14,18 @@ let to = ref(7);
 let from = ref(7);
 let links = ref([]);
 
+const search = ref('');
+watch(search, (newValue, oldValue) => {
+    searchItems();
+});
+
+
+const searchItems = () => {
+    current_page = 1;
+    last_page = 1;
+    fetchItems();
+};
+
 
 const handleLinkClick = (link) => {
     if (link.url) {
@@ -26,7 +38,8 @@ const fetchItems = (url = null) => {
     if (url) {
         link = url;
     }
-    axios.get(link)
+    const searchQuery = search.value ? `&search=${search.value}` : '';
+    axios.get(`${link}?${searchQuery}`)
         .then(response => {
             // console.log("response", response);
             items.value = response.data.data;
@@ -80,10 +93,40 @@ onMounted(() => {
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div>
                         <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
-                            <a :href="route('send_mail')"
-                                class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                                Email Active Users
-                            </a>
+                            <div class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4">
+                                <a :href="route('send_mail')"
+                                    class="inline-flex justify-center items-center ml-4 py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                                    Email Active Users
+                                </a>
+                                <div class="flex justify-end">
+                                    <div class="pb-4 bg-white dark:bg-gray-900">
+                                        <!-- <form @submit.prevent="searchItems"> -->
+                                        <div class="flex items-center">
+                                            <label for="table-search" class="sr-only">Search</label>
+                                            <div class="relative mt-1 flex items-center">
+                                                <div
+                                                    class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                        <path stroke="currentColor" stroke-linecap="round"
+                                                            stroke-linejoin="round" stroke-width="2"
+                                                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                                    </svg>
+                                                </div>
+                                                <input v-model="search" type="text" id="table-search"
+                                                    class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                    placeholder="Search for users">
+                                            </div>
+                                            <!-- <PrimaryButton type="submit"
+                                                    class="ml-2 p-2 bg-blue-500 text-white rounded-md">
+                                                    Search
+                                                </PrimaryButton> -->
+                                        </div>
+                                        <!-- </form> -->
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
                                 <pagination :from="from" :to="to" :total="total" :current_page="current_page" :links="links"
                                     @link-clicked="handleLinkClick" />
